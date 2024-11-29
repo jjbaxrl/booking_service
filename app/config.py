@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
     DB_NAME: str
+    secret_key: str
+    algorithm: str
     DATABASE_URL: str = Field(default_factory=str)
 
     @model_validator(mode="after")
