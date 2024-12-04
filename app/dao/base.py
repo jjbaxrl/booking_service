@@ -1,6 +1,7 @@
-from sqlalchemy import select, insert
+from sqlalchemy import delete, select, insert
 
 from app.database import async_session_maker
+from app.exceptions import NotFoundException
 
 
 class BaseDAO:
@@ -33,3 +34,13 @@ class BaseDAO:
             query = insert(cls.model).values(**data)
             await session.execute(query)
             await session.commit()
+
+    @classmethod
+    async def delete(cls, id: int):
+        async with async_session_maker() as session:
+            query = delete(cls.model).where(cls.model.id == id)
+            result = await session.execute(query)
+            await session.commit()
+            if result.rowcount == 0:
+                raise NotFoundException
+            return result.rowcount
