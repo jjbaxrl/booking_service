@@ -6,4 +6,4 @@ __pycache__/
 *.log
 .vscode/
 .idea/
-delete
+delete.ipynb

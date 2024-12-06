@@ -1,13 +1,12 @@
 
 from json import loads
-from sqlalchemy import String, func, select
+from sqlalchemy import String, select
 
 from app.dao.base import BaseDAO
 from app.exceptions import HotelNotFoundException
 from app.hotels.models import Hotels
 from app.hotels.rooms.dao import RoomsDAO
 from app.database import async_session_maker
-from app.hotels.rooms.models import Rooms
 
 
 class HotelDAO(BaseDAO):
@@ -24,18 +23,8 @@ class HotelDAO(BaseDAO):
                         Hotels.services.cast(String),
                         Hotels.rooms_quantity,
                         Hotels.image_id,
-                        func.count(Rooms.id).label("rooms_quantity")
-                    )
-                    .join(Rooms, Rooms.hotel_id == Hotels.id)
+                        )
                     .where(Hotels.location.like(f'%{location}%'))
-                    .group_by(
-                        Hotels.id,
-                        Hotels.name,
-                        Hotels.location,
-                        Hotels.services.cast(String),
-                        Hotels.rooms_quantity,
-                        Hotels.image_id
-                    )
             )
             result = await session.execute(query)
             hotels = result.mappings().all()
@@ -44,39 +33,27 @@ class HotelDAO(BaseDAO):
                 raise HotelNotFoundException
 
             # Преобразуем RowMapping в dict
-            hotels = [dict(hotel) for hotel in hotels]
+            hotels_dict = [dict(hotel) for hotel in hotels]
 
             # Преобразуем services из строки в список
-            for hotel in hotels:
+            for hotel in hotels_dict:
                 hotel["services"] = loads(hotel["services"])
 
-            hotel_ids = [hotel["id"] for hotel in hotels]
+            hotel_ids = [hotel["id"] for hotel in hotels_dict]
 
-            rooms_left_data = await RoomsDAO.get_rooms_left_by_hotels(
+            rooms_left_data = await RoomsDAO.get_booked_count_by_hotel(
                 hotel_ids=hotel_ids,
                 date_from=date_from,
                 date_to=date_to
             )
-            print(rooms_left_data)
-            rooms_left_by_hotel = {}
 
-            # Считаем количество свободных комнат для каждого отеля
-            for room in rooms_left_data:
-                hotel_id = room["hotel_id"]
-                if hotel_id not in rooms_left_by_hotel:
-                    rooms_left_by_hotel[hotel_id] = 0
-                if room["rooms_left"] > 0:
-                    rooms_left_by_hotel[hotel_id] += 1  # Cчетчик свободных комнат
+            # Преобразуем rooms_left_data в словарь для быстрого доступа по hotel_id
+            rooms_left_dict = {room["hotel_id"]: int(room["rooms_booked"]) for room in rooms_left_data}  # noqa F401
 
-            # Фильтрация и добавление данных о количестве свободных комнат
-            hotels_with_rooms_left = []
-            for hotel in hotels:
+            # Добавляем данные о rooms_left к каждому отелю
+            for hotel in hotels_dict:
                 hotel_id = hotel["id"]
-                rooms_left = hotel["rooms_quantity"] - rooms_left_by_hotel.get(hotel_id, 0)
-                if rooms_left > 0:  # Добавляем отель только если есть свободные комнаты
-                    hotels_with_rooms_left.append({
-                        **hotel,
-                        "rooms_left": rooms_left
-                    })
+                hotel["rooms_left"] = int(hotel["rooms_quantity"]) - rooms_left_dict.get(hotel_id, hotel["rooms_quantity"])  # noqa F401
 
-            return hotels_with_rooms_left
+            hotels_dict = [hotel for hotel in hotels_dict if hotel["rooms_left"] != 0]
+            return hotels_dict

@@ -9,4 +9,11 @@ class SHotels(BaseModel):
     services: List[str]
     rooms_quantity: int
     image_id: int
+
+
+class SHotelsWithRooms(SHotels):
     rooms_left: int
+
+
+class SHotelsWithoutRooms(SHotels):
+    pass
