@@ -12,7 +12,14 @@ class SBooking(BaseModel):
     price: int
     total_days: int
     total_cost: int
-    room_details: SBooking_Rooms
 
     class Config:
         orm_mode = True
+
+
+class SBookingWithoutRoomsDetails(SBooking):
+    pass
+
+
+class SBookingWithRoomDetails(SBooking):
+    room_details: SBooking_Rooms

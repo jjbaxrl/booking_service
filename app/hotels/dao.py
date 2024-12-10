@@ -1,4 +1,5 @@
 
+from datetime import date
 from json import loads
 from sqlalchemy import String, select
 
@@ -13,7 +14,7 @@ class HotelDAO(BaseDAO):
     model = Hotels
 
     @classmethod
-    async def find_all(cls, location: str, date_from: str, date_to: str):
+    async def find_all(cls, location: str, date_from: date, date_to: date):
         async with async_session_maker() as session:
             query = (
                     select(

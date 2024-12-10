@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, ForeignKey, Date, Computed
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 from datetime import date
 
@@ -23,3 +23,9 @@ class Bookings(Base):
         Computed("date_to - date_from"),  # Преобразование в количество дней
         nullable=False
     )
+
+    user = relationship("Users", back_populates="booking")
+    room = relationship("Rooms", back_populates="booking")
+
+    def __str__(self):
+        return f"Бронь #{self.id}"

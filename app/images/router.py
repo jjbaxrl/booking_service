@@ -1,0 +1,18 @@
+from fastapi import APIRouter, UploadFile
+import shutil
+
+from app.tasks.tasks import process_pic
+
+router = APIRouter(
+    prefix="/images",
+    tags=["Загрузка изображений"]
+)
+
+
+@router.post("/hotels")
+async def add_hotel_image(name: int, file: UploadFile):
+    im_path = f"app/static/images/{name}.webp"
+    with open(im_path, "wb+") as file_object:  # noqa F401
+        shutil.copyfileobj(file.file, file_object)
+    result = process_pic.delay(im_path)
+    return {"task_id": result.id}

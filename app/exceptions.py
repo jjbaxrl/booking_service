@@ -57,7 +57,7 @@ class HotelException(HTTPException):
 
 
 class HotelNotFoundException(HotelException):
-    detail = "Не найден отель в данной локации"
+    detail = "Не найден отель с такими параметрами"
 
 
 class RoomNotFoundException(HotelException):

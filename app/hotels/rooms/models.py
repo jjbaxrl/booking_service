@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, String, ForeignKey, JSON, CheckConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
 
@@ -19,3 +19,9 @@ class Rooms(Base):
         CheckConstraint("price > 0", name="check_price_positive"),
         CheckConstraint("quantity >= 0", name="check_quantity_nonnegative")
     )
+
+    booking = relationship("Bookings", back_populates="room")
+    hotel = relationship("Hotels", back_populates="rooms")
+
+    def __str__(self):
+        return f"Комната {self.name}, цена: {self.price}"

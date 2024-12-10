@@ -12,6 +12,14 @@ class Settings(BaseSettings):
     ALGORITHM: str
     DATABASE_URL: str = Field(default_factory=str)
 
+    REDIS_HOST: str
+    REDIS_PORT: str
+
+    SMTP_HOST: str
+    SMTP_PORT: str
+    SMTP_USER: str
+    SMPT_PASS: str
+
     @model_validator(mode="after")
     def get_database_url(cls, model):
         model.DATABASE_URL = (
