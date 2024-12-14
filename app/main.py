@@ -29,6 +29,7 @@ from app.config import settings
 from app.database import engine
 from app.admin.auth import authentication_backend
 
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}")

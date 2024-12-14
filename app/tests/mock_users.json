@@ -1,0 +1,15 @@
+[
+    {
+        "email": "fedor@moloko.ru",
+        "hashed_password": "tut_budet_hashed_password_1"
+    },
+    {
+        "email": "bij@example.com",
+        "hashed_password": "$2b$12$hylU6.m9AShgIVsTvr/7gOCVPkcuZjDfcX3PhPV2hsJxQttXmBawm"
+    },
+    {
+        "email": "user@example.com",
+        "hashed_password": "$2b$12$Njp6RwnVD8JZpUczFG71u.nyHMqdPHF9cYmvlG8LACbxM.LqfeONG"
+    }
+]
+

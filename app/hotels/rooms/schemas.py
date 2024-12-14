@@ -1,5 +1,5 @@
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class SRooms(BaseModel):
@@ -14,8 +14,7 @@ class SRooms(BaseModel):
     total_cost: int
     rooms_left: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(env_file=".env")
 
 
 class SBooking_Rooms(BaseModel):
@@ -24,5 +23,4 @@ class SBooking_Rooms(BaseModel):
     services: List[str]
     image_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(env_file=".env")

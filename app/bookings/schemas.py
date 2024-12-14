@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from app.hotels.rooms.schemas import SBooking_Rooms
 
@@ -13,8 +13,7 @@ class SBooking(BaseModel):
     total_days: int
     total_cost: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(env_file=".env")
 
 
 class SBookingWithoutRoomsDetails(SBooking):

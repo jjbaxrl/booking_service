@@ -10,27 +10,27 @@ class BookingException(HTTPException):
 
 
 class UserAlreadyExistsException(BookingException):
-    status_code = status.HTTP_409_CONFLICT,
+    status_code = status.HTTP_409_CONFLICT
     detail = "Пользователь уже существует"
 
 
 class IncorrectEmailOrPasswordException(BookingException):
-    status_code = status.HTTP_401_UNAUTHORIZED,
+    status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Неверная почта или пароль"
 
 
 class TokenExpiredException(BookingException):
-    status_code = status.HTTP_401_UNAUTHORIZED,
+    status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Токен истек"
 
 
 class TokenAbsentException(BookingException):
-    status_code = status.HTTP_401_UNAUTHORIZED,
+    status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Токен отсутствует"
 
 
 class IncorrectTokenFormatException(BookingException):
-    status_code = status.HTTP_401_UNAUTHORIZED,
+    status_code = status.HTTP_401_UNAUTHORIZED
     detail = "Неверный формат токена"
 
 
