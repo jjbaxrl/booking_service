@@ -5,6 +5,7 @@ from sqlalchemy import and_, delete, func, insert, select, update
 from app.bookings.schemas import SBookingWithRoomDetails
 from app.dao.base import BaseDAO
 from app.bookings.models import Bookings
+from app.exceptions import RoomCannotBeBooked
 from app.hotels.rooms.models import Rooms
 from app.database import async_session_maker
 from app.hotels.rooms.schemas import SBooking_Rooms
@@ -43,6 +44,9 @@ class BookingDAO(BaseDAO):
             rooms_left = await session.execute(query)
             rooms_left = rooms_left.scalar()
             print(rooms_left)
+
+            if rooms_left == 0:
+                raise RoomCannotBeBooked
 
             if not rooms_left or rooms_left > 0:
                 get_price = select(Rooms.price).filter_by(id=room_id)
@@ -103,6 +107,7 @@ class BookingDAO(BaseDAO):
             bookings = result.fetchall()
             bookings_with_rooms = [
                 SBookingWithRoomDetails(
+                    id=booking.id,
                     room_id=booking.room_id,
                     user_id=booking.user_id,
                     date_from=booking.date_from,

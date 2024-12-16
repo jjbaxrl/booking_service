@@ -52,6 +52,18 @@ async def prepare_database():
         await session.commit()
 
 
+@pytest.fixture(scope="session")
+async def authenticated_ac():
+    transport = ASGITransport(app=fastapi_app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        await ac.post("auth/login", json={
+            "email": "user@example.com",
+            "password": "string",
+        })
+        assert ac.cookies["booking_access_token"]
+        yield ac
+
+
 @pytest.fixture(scope="function")
 async def ac():
     transport = ASGITransport(app=fastapi_app)

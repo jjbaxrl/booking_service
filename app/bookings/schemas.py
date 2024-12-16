@@ -5,6 +5,7 @@ from app.hotels.rooms.schemas import SBooking_Rooms
 
 
 class SBooking(BaseModel):
+    id: int
     room_id: int
     user_id: int
     date_from: date

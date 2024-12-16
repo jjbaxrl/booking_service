@@ -62,3 +62,13 @@ class HotelNotFoundException(HotelException):
 
 class RoomNotFoundException(HotelException):
     detail = "Не найдено комнат с данным id"
+
+
+class IncorrectDatesException(HotelException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Дата заезда должна быть раньше, чем дата выезда"
+
+
+class BigDateIntervalException(HotelException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Слишком большой срок бронирования"

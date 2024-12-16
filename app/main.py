@@ -2,14 +2,9 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-# from starlette.requests import Request
-# from starlette.responses import Response
 
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
-
-from redis import asyncio as aioredis
 
 from sqladmin import Admin
 
@@ -32,16 +27,12 @@ from app.admin.auth import authentication_backend
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    from redis import asyncio as aioredis
     redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}")
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     yield
 
 app = FastAPI(lifespan=lifespan)
-
-
-@cache()
-async def get_cache():
-    return 1
 
 app.mount("/static", app=StaticFiles(directory="app/static"), name="static")
 

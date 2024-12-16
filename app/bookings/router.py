@@ -7,7 +7,7 @@ from app.bookings.schemas import SBookingWithoutRoomsDetails
 from app.tasks.tasks import send_booking_confirmation_email
 from app.users.dependencies import get_current_user
 from app.users.models import Users
-from app.exceptions import NotFoundException, RoomCannotBeBooked
+from app.exceptions import NotFoundException
 from fastapi import BackgroundTasks
 
 router = APIRouter(
@@ -18,7 +18,10 @@ router = APIRouter(
 
 @router.get("", response_model=list[SBookingWithoutRoomsDetails])
 async def get_bookings(user: Users = Depends(get_current_user)):
-    return await BookingDAO.find_all(user_id=user.id)
+    bookings = await BookingDAO.find_all(user_id=user.id)
+    if not bookings:
+        raise NotFoundException
+    return bookings
 
 
 @router.post("")
@@ -28,8 +31,6 @@ async def add_booking(
     user: Users = Depends(get_current_user)
 ):
     booking = await BookingDAO.add(user.id, room_id, date_from, date_to)
-    if not booking:
-        raise RoomCannotBeBooked
 
     # Преобразуем объект Booking в словарь, исключая служебные атрибуты SQLAlchemy
     booking_dict = {k: v for k, v in booking.__dict__.items() if not k.startswith('_')}
