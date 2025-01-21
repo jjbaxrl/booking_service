@@ -72,3 +72,17 @@ class IncorrectDatesException(HotelException):
 class BigDateIntervalException(HotelException):
     status_code = status.HTTP_400_BAD_REQUEST
     detail = "Слишком большой срок бронирования"
+
+
+class NoSuchRoomException(HotelException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "Нет комнаты с таким номером"
+
+
+class NoFileUploadedException(HotelException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    detail = "Не был загружен файл"
+
+
+class IncorrectServicesFormat(ValueError):
+    detail = "Некорретный формат сервисов"

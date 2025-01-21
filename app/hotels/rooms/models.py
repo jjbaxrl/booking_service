@@ -17,7 +17,7 @@ class Rooms(Base):
 
     __table_args__ = (
         CheckConstraint("price > 0", name="check_price_positive"),
-        CheckConstraint("quantity >= 0", name="check_quantity_nonnegative")
+        CheckConstraint("quantity >= 0", name="check_quantity_nonnegative"),
     )
 
     booking = relationship("Bookings", back_populates="room")

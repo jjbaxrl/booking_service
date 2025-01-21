@@ -1,5 +1,5 @@
 venv/
-.env
+.env*
 __pycache__/
 *.py[cod]
 *.db
@@ -7,3 +7,4 @@ __pycache__/
 .vscode/
 .idea/
 delete.ipynb
+test_data_db.sql

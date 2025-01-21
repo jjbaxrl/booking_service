@@ -16,12 +16,12 @@ class Bookings(Base):
     total_cost: Mapped[int] = mapped_column(
         Integer,
         Computed("(date_to - date_from) * price"),  # Явное количество дней
-        nullable=False
+        nullable=False,
     )
     total_days: Mapped[int] = mapped_column(
         Integer,
         Computed("date_to - date_from"),  # Преобразование в количество дней
-        nullable=False
+        nullable=False,
     )
 
     user = relationship("Users", back_populates="booking")
